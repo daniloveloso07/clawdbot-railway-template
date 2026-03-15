@@ -82,6 +82,8 @@ RUN echo '#!/bin/bash' > /usr/local/bin/brew \
     && echo 'su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew $*"' >> /usr/local/bin/brew \
     && chmod +x /usr/local/bin/brew
 
+# Binários do Homebrew e Go serão adicionados ao PATH final abaixo.
+
 # Adicionar a pasta do linuxbrew ao PATH do ambiente oficial para que as skills achem os pacotes
 ENV HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
 ENV HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
@@ -125,6 +127,8 @@ COPY src ./src
 # If we force a different port, deployments can come up but the domain will route elsewhere.
 EXPOSE 8080
 
-# Ensure PID 1 reaps zombies and forwards signals.
-ENTRYPOINT ["tini", "--"]
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "src/server.js"]

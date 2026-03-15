@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+# Link any binaries installed by brew (runtime installs) to /usr/local/bin
+# so the app can find them easily if PATH expansion is tricky
+if [ -d "/home/linuxbrew/.linuxbrew/bin" ]; then
+    ln -s /home/linuxbrew/.linuxbrew/bin/* /usr/local/bin/ 2>/dev/null || true
+fi
+
+# Execute the original command
+exec tini -- "$@"
