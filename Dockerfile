@@ -67,11 +67,22 @@ RUN apt-get update \
     curl \
   && rm -rf /var/lib/apt/lists/*
 
-# Instalação do Homebrew (Linuxbrew) de forma desatendida e sem usar o sudo
-ENV NONINTERACTIVE=1
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# O Homebrew bloqueia instalações diretas por usuários Root. Criando um sub-usuário
+# emulando o container e configurando um wrapper global para despachar chamadas
+RUN useradd -m -s /bin/bash linuxbrew \
+    && mkdir -p /home/linuxbrew/.linuxbrew \
+    && chown -R linuxbrew:linuxbrew /home/linuxbrew \
+    && su - linuxbrew -c "git clone https://github.com/Homebrew/brew /home/linuxbrew/.linuxbrew/Homebrew" \
+    && su - linuxbrew -c "mkdir /home/linuxbrew/.linuxbrew/bin" \
+    && su - linuxbrew -c "ln -s /home/linuxbrew/.linuxbrew/Homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew" \
+    && su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew update"
 
-# Adicionar Homebrew ao PATH do ambiente
+# Wrapper global para que as chamadas do OpenClaw (que roda como root) fluam pro Homebrew
+RUN echo '#!/bin/bash' > /usr/local/bin/brew \
+    && echo 'su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew $*"' >> /usr/local/bin/brew \
+    && chmod +x /usr/local/bin/brew
+
+# Adicionar a pasta do linuxbrew ao PATH do ambiente oficial para que as skills achem os pacotes
 ENV HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
 ENV HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
 ENV HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
