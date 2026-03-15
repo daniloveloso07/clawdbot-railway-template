@@ -60,9 +60,24 @@ RUN apt-get update \
     gh \
     unzip \
     jq \
+    build-essential \
+    procps \
+    git \
+    file \
+    curl \
   && rm -rf /var/lib/apt/lists/*
 
-# Configuração do Go para usar a pasta de volume persistente no Railway
+# Instalação do Homebrew (Linuxbrew) de forma desatendida e sem usar o sudo
+ENV NONINTERACTIVE=1
+RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Adicionar Homebrew ao PATH do ambiente
+ENV HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
+ENV HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
+ENV HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
+ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
+
+# Configuração do Go para persistir no Railway
 ENV GOPATH=/data/go
 ENV PATH="/data/go/bin:${PATH}"
 
