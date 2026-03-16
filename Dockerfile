@@ -79,7 +79,7 @@ RUN useradd -m -s /bin/bash linuxbrew \
 
 # Pre-instalar ferramentas essenciais para não depender da instalação manual via UI (que some)
 RUN su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew tap steipete/tap" \
-    && su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew install gogcli goplaces"
+    && su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew install gogcli goplaces uv himalaya"
 # Criar atalho para o gogcli ser reconhecido como gog
 RUN ln -s /home/linuxbrew/.linuxbrew/bin/gogcli /usr/local/bin/gog
 
