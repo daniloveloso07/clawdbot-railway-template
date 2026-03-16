@@ -65,22 +65,14 @@ RUN apt-get update \
     git \
     file \
     curl \
-    # Dependências mínimas para o Chromium/Playwright rodar no Debian \
-    libgbm1 \
-    libnss3 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    libasound2 \
-    libxfixes3 \
-    libxkbcommon0 \
-    libpango-1.0-0 \
-    libcairo2 \
   && rm -rf /var/lib/apt/lists/*
+
+# Instalar Google Chrome oficial para garantir detecção automática
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/*
 
 # O Homebrew bloqueia instalações diretas por usuários Root. Criando um sub-usuário
 # emulando o container e configurando um wrapper global para despachar chamadas
@@ -151,10 +143,9 @@ EXPOSE 8080
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Garantir que o Playwright e o Chromium estejam instalados para a skill de browsing
-RUN npm install -g playwright@latest \
-    && npx playwright install --with-deps chromium \
-    && chmod -R 777 /root/.cache/ms-playwright
+# Garantir que o Playwright esteja instalado para a skill de browsing
+# O Playwright usará o Chrome do sistema já instalado acima
+RUN npm install -g playwright@latest
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "src/server.js"]
