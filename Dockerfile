@@ -97,11 +97,9 @@ RUN echo '#!/bin/bash' > /usr/local/bin/brew \
 ENV HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
 ENV HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
 ENV HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
-ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
+# Unificar PATH: Linuxbrew + Go + NPM + PNPM + Sistema
+ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/data/go/bin:/data/npm/bin:/data/pnpm:${PATH}"
 
-# Configuração do Go para persistir no Railway
-ENV GOPATH=/data/go
-ENV PATH="/data/go/bin:${PATH}"
 
 # `openclaw update` expects pnpm. Provide it in the runtime image.
 RUN corepack enable && corepack prepare pnpm@10.23.0 --activate
