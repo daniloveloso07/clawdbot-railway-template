@@ -65,6 +65,21 @@ RUN apt-get update \
     git \
     file \
     curl \
+    # Dependências mínimas para o Chromium/Playwright rodar no Debian \
+    libgbm1 \
+    libnss3 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libasound2 \
+    libxfixes3 \
+    libxkbcommon0 \
+    libpango-1.0-0 \
+    libcairo2 \
   && rm -rf /var/lib/apt/lists/*
 
 # O Homebrew bloqueia instalações diretas por usuários Root. Criando um sub-usuário
@@ -135,6 +150,11 @@ EXPOSE 8080
 
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Garantir que o Playwright e o Chromium estejam instalados para a skill de browsing
+RUN npm install -g playwright@latest \
+    && npx playwright install --with-deps chromium \
+    && chmod -R 777 /root/.cache/ms-playwright
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "src/server.js"]
