@@ -8,9 +8,11 @@ if [ -d "/home/linuxbrew/.linuxbrew/bin" ]; then
 fi
 
 # Limpeza proativa de travas do Chrome para evitar erro "Profile in use"
-echo "Limpando travas de perfil do Chrome..."
+echo "Limpando processos e travas de perfil do Chrome..."
+pkill -f 'google-chrome|chrome' || true
 find /root/.openclaw -name "Singleton*" -delete 2>/dev/null || true
 find /data -name "Singleton*" -delete 2>/dev/null || true
+find /data/.openclaw -name "Singleton*" -delete 2>/dev/null || true
 
 # Execute the original command
 exec tini -- "$@"
