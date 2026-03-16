@@ -83,9 +83,8 @@ RUN su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew tap steipete/tap" \
 # Criar atalho para o gogcli ser reconhecido como gog
 RUN ln -s /home/linuxbrew/.linuxbrew/bin/gogcli /usr/local/bin/gog
 
-RUN go install github.com/schollz/gifgrep@latest
-
 # Wrapper global para que as chamadas do OpenClaw (que roda como root) fluam pro Homebrew
+
 RUN echo '#!/bin/bash' > /usr/local/bin/brew \
     && echo 'su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew $*"' >> /usr/local/bin/brew \
     && chmod +x /usr/local/bin/brew
