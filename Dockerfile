@@ -42,6 +42,8 @@ RUN pnpm ui:install && pnpm ui:build
 # Runtime image
 FROM node:22-bookworm
 ENV NODE_ENV=production
+ENV ALLOW_NO_SANDBOX=true
+ENV OPENCLAW_BROWSER_NO_SANDBOX=true
 
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
