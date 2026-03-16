@@ -44,6 +44,8 @@ FROM node:22-bookworm
 ENV NODE_ENV=production
 ENV ALLOW_NO_SANDBOX=true
 ENV OPENCLAW_BROWSER_NO_SANDBOX=true
+ENV OPENCLAW_BROWSER_HEADLESS=true
+ENV OPENCLAW_BROWSER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
