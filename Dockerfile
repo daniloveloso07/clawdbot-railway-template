@@ -78,7 +78,11 @@ RUN useradd -m -s /bin/bash linuxbrew \
     && su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew update"
 
 # Pre-instalar ferramentas essenciais para não depender da instalação manual via UI (que some)
-RUN su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew install gog goplaces"
+RUN su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew tap steipete/tap" \
+    && su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew install gogcli goplaces"
+# Criar atalho para o gogcli ser reconhecido como gog
+RUN ln -s /home/linuxbrew/.linuxbrew/bin/gogcli /usr/local/bin/gog
+
 RUN go install github.com/schollz/gifgrep@latest
 
 # Wrapper global para que as chamadas do OpenClaw (que roda como root) fluam pro Homebrew
