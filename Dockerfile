@@ -77,12 +77,17 @@ RUN useradd -m -s /bin/bash linuxbrew \
     && su - linuxbrew -c "ln -s /home/linuxbrew/.linuxbrew/Homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew" \
     && su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew update"
 
+# Pre-instalar ferramentas essenciais para não depender da instalação manual via UI (que some)
+RUN su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew install gog goplaces"
+RUN go install github.com/schollz/gifgrep@latest
+
 # Wrapper global para que as chamadas do OpenClaw (que roda como root) fluam pro Homebrew
 RUN echo '#!/bin/bash' > /usr/local/bin/brew \
     && echo 'su - linuxbrew -c "/home/linuxbrew/.linuxbrew/bin/brew $*"' >> /usr/local/bin/brew \
     && chmod +x /usr/local/bin/brew
 
 # Binários do Homebrew e Go serão adicionados ao PATH final abaixo.
+
 
 # Adicionar a pasta do linuxbrew ao PATH do ambiente oficial para que as skills achem os pacotes
 ENV HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
